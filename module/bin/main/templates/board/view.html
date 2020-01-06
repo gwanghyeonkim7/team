@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="common/head">
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+/* Remove the navbar's default margin-bottom and rounded borders */
+.navbar {
+	margin-bottom: 0;
+	border-radius: 0;
+}
+
+/* Add a gray background color and some padding to the footer */
+footer {
+	background-color: #f2f2f2;
+	padding: 25px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="panel-group">
+			<div class="panel panel-default">
+				<div class="panel-heading" th:text="${board.id} + '번'"></div>
+				<div class="panel-heading" th:text="${board.title}"></div>
+				<div class="panel-body" th:text="${board.content}"></div>
+				<div class="panel-footer" th:text="${board.userId}"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container text-right">
+		<button type="button" class="btn btn-default" id="list">목록</button>
+		<button type="button" class="btn btn-default" id="update">수정</button>
+		<button type="button" class="btn btn-default" id="delete">삭제</button>
+	</div>
+
+	<br>
+
+	<script>
+
+		 $("#list").click(function() {
+			 location = "/board";
+			 return false;
+			 });
+			 $("#update").click(function() {
+			 location = "/board/update/" + [[${board.id}]];
+			 return false;
+			 });
+			 $("#delete").click(function() {
+			 location = "/board/delete/" + [[${board.id}]];
+			 return false;
+			 });
+	</script>
+</body>
+</html>
