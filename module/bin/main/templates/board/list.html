@@ -13,6 +13,7 @@
 						<th>번호</th>
 						<th>제목</th>
 						<th>작성자</th>
+						<th>날짜</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -20,6 +21,7 @@
 						<td th:text="${board.id}"></td>
 						<td th:text="${board.title}"></td>
 						<td th:text="${board.userId}"></td>
+						<td	th:text="${board.creDate}"></td>
 					</tr>
 				</tbody>
 			</table>

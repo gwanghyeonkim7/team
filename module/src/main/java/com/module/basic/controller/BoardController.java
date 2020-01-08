@@ -1,5 +1,6 @@
 package com.module.basic.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import com.module.basic.repository.BoardRepository;
 public class BoardController {
 	@Autowired
 	BoardRepository boardRepository;
+	
 	@Autowired
 	HttpSession session;
 
@@ -35,8 +37,10 @@ public class BoardController {
 		User user = (User) session.getAttribute("user_info");
 		String userId = user.getEmail();
 		board.setUserId(userId);
+		board.setCreDate(new Date());
+		
 		boardRepository.save(board);
-		return "board/write";
+		return "redirect:/board";
 	}
 
 //	@GetMapping("/board")
@@ -52,7 +56,6 @@ public class BoardController {
 		model.addAttribute("list", list);
 		return "board/list";
 
-		
 	}
 
 	@GetMapping("/board/{id}")
@@ -65,16 +68,28 @@ public class BoardController {
 
 	@GetMapping("/board/update/{id}")
 	public String boardUpdate(Model model, @PathVariable("id") long id) {
+		
 		Optional<Board> data = boardRepository.findById(id);
 		Board board = data.get();
+		
+		User user = (User) session.getAttribute("user_info");
+		if( user.getEmail().equals(board.getUserId()) ) {
+			
 		model.addAttribute("board", board);
-		return "board/update";
+		return "board/update/" + id;
+	}
+		else {
+
+			return "not_user";
+		}
+			
 	}
 
 	@PostMapping("/board/update/{id}")
-	public String boardUpdatePost(
-			@ModelAttribute Board board, @PathVariable("id") long id) {
+	public String boardUpdatePost(@ModelAttribute Board board, @PathVariable("id") long id) {
 		User user = (User) session.getAttribute("user_info");
+		
+		
 		String userId = user.getEmail();
 		board.setUserId(userId);
 		board.setId(id);
@@ -84,7 +99,23 @@ public class BoardController {
 
 	@GetMapping("/board/delete/{id}")
 	public String boardDelete(@PathVariable("id") long id) {
-	boardRepository.deleteById(id);
-	return "redirect:/board";
+		// 22번 게시물 삭제
+		// 로그인된 사용자와 게시물 작성자가 동일할 때만 삭제
+		
+		// 1. 로그인된 사용자의 정보 알아내기
+		User user = (User) session.getAttribute("user_info");
+		
+		// 2. 게시물 작성자의 정보 알아내기
+		Optional<Board> opt = boardRepository.findById(id);
+		Board board = opt.get();
+//		if(user.getEmail() == board.getUserId()) {
+		if( user.getEmail().equals(board.getUserId()) ) {
+			boardRepository.deleteById(id);
+		} else {
+			// 사용자가 일치하지 않음
+			return "not_user";
+		}
+		
+		return "redirect:/board";
 	}
-	}
+}
